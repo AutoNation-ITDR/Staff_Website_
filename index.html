@@ -8,21 +8,25 @@
   <meta name="theme-color" content="#0b0f1b">
   <style>
     :root {
-      --bg: #070b14;
-      --bg-soft: #101726;
-      --panel: rgba(12, 17, 30, 0.9);
-      --panel-border: rgba(133, 184, 255, 0.16);
-      --text: #f4f7ff;
-      --muted: #9caecf;
-      --accent: #5ecbff;
-      --accent-strong: #1896ff;
-      --gold: #f6c15d;
-      --warn: #ffb548;
-      --danger: #ff6e7f;
+      --bg: #0a0e1a;
+      --bg-soft: #131929;
+      --bg-lighter: #1a2332;
+      --panel: rgba(19, 25, 41, 0.95);
+      --panel-border: rgba(94, 203, 255, 0.25);
+      --text: #f0f4ff;
+      --text-secondary: #a8c5e0;
+      --muted: #8fa3bf;
+      --accent: #00d4ff;
+      --accent-glow: #00a8cc;
+      --accent-strong: #0088ff;
+      --gold: #ffa500;
+      --warn: #ff9800;
+      --danger: #ff5252;
       --success: #4ee29f;
-      --shadow: 0 24px 80px rgba(0, 0, 0, 0.45);
+      --shadow: 0 24px 80px rgba(0, 0, 0, 0.6);
+      --shadow-light: 0 8px 32px rgba(0, 212, 255, 0.15);
       --sidebar-width: 280px;
-      font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", sans-serif;
     }
 
     * {
@@ -34,9 +38,9 @@
       margin: 0;
       min-height: 100%;
       background:
-        radial-gradient(circle at top, rgba(94, 203, 255, 0.18), transparent 28%),
-        radial-gradient(circle at bottom right, rgba(246, 193, 93, 0.14), transparent 22%),
-        linear-gradient(180deg, #09111d 0%, #05070d 100%);
+        radial-gradient(circle at 20% 50%, rgba(0, 212, 255, 0.1), transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(0, 168, 204, 0.08), transparent 50%),
+        linear-gradient(180deg, #0a0e1a 0%, #05080f 100%);
       color: var(--text);
     }
 
@@ -97,33 +101,48 @@
     .sidebar,
     .topbar {
       border: 1px solid var(--panel-border);
-      background: linear-gradient(180deg, rgba(18, 25, 42, 0.94), rgba(8, 13, 24, 0.96));
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(20px);
+      background: linear-gradient(135deg, rgba(19, 25, 41, 0.97), rgba(10, 14, 26, 0.98));
+      box-shadow: var(--shadow), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(30px);
+      -webkit-backdrop-filter: blur(30px);
     }
 
     .login-brand {
-      border-radius: 36px;
-      padding: 38px;
+      border-radius: 24px;
+      padding: 48px;
       display: flex;
       flex-direction: column;
       justify-content: center;
-      gap: 22px;
+      gap: 28px;
       overflow: hidden;
+      position: relative;
+    }
+
+    .login-brand::before {
+      content: "";
+      position: absolute;
+      top: -50%;
+      right: -50%;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(0, 212, 255, 0.15), transparent);
+      border-radius: 50%;
+      pointer-events: none;
     }
 
     .brand-logo {
-      width: min(360px, 100%);
-      filter: drop-shadow(0 14px 36px rgba(0, 0, 0, 0.45));
+      width: min(320px, 100%);
+      filter: drop-shadow(0 20px 40px rgba(0, 212, 255, 0.2));
       object-fit: contain;
+      z-index: 1;
     }
 
     .eyebrow {
       margin: 0 0 8px;
-      color: var(--gold);
+      color: var(--accent);
       text-transform: uppercase;
       letter-spacing: 0.16em;
-      font-size: 0.76rem;
+      font-size: 0.75rem;
     }
 
     .brand-copy h1,
@@ -145,23 +164,27 @@
 
     .login-card {
       position: relative;
-      border-radius: 30px;
-      padding: 30px;
+      border-radius: 20px;
+      padding: 45px;
       overflow: hidden;
+      background: linear-gradient(135deg, rgba(25, 33, 52, 0.98), rgba(15, 20, 35, 0.99)) !important;
     }
 
     .card-glow {
       position: absolute;
       inset: auto -20% -25% auto;
-      width: 240px;
-      height: 240px;
+      width: 320px;
+      height: 320px;
       border-radius: 50%;
-      background: radial-gradient(circle, rgba(94, 203, 255, 0.34), transparent 70%);
+      background: radial-gradient(circle, rgba(0, 212, 255, 0.25), transparent 70%);
       pointer-events: none;
+      filter: blur(40px);
     }
 
     .login-note {
-      margin-top: 10px;
+      margin-top: 12px;
+      font-size: 0.9rem;
+      line-height: 1.5;
     }
 
     .stack {
