@@ -1319,56 +1319,7 @@
 
     const robloxCache = {};
 
-    async function fetchRobloxAvatarByUsername(username) {
-      const fallback = "https://tr.rbxcdn.com/180DAY-6f5f2d2f73728d0f0d3a56d98d0d2178/150/150/AvatarHeadshot/Png";
-      
-      if (robloxCache[username]) {
-        return robloxCache[username];
-      }
-
-      try {
-        const controller = new AbortController();
-        const timeoutId = setTimeout(function() { controller.abort(); }, 5000);
-        
-        const response = await fetch("https://users.roblox.com/v1/usernames/users", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ usernames: [username], excludeBannedUsers: false }),
-          signal: controller.signal
-        });
-        clearTimeout(timeoutId);
-        
-        if (!response.ok) {
-          robloxCache[username] = fallback;
-          return fallback;
-        }
-        const data = await response.json();
-        const userId = data && data.data && data.data[0] && data.data[0].id;
-        if (!userId) {
-          robloxCache[username] = fallback;
-          return fallback;
-        }
-
-        const avatarResponse = await fetch("https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=" + userId + "&size=150x150&format=Png&isCircular=false", {
-          signal: controller.signal
-        });
-        
-        if (!avatarResponse.ok) {
-          robloxCache[username] = fallback;
-          return fallback;
-        }
-        
-        const avatarData = await avatarResponse.json();
-        const imageUrl = avatarData && avatarData.data && avatarData.data[0] && avatarData.data[0].imageUrl;
-        const result = imageUrl || fallback;
-        robloxCache[username] = result;
-        return result;
-      } catch (error) {
-        console.warn("Roblox API error for " + username + ": " + error.message);
-        robloxCache[username] = fallback;
-        return fallback;
-      }
-    }
+    // Avatar fetching disabled - using local placeholders instead
 
     const erlcCommands = [
       { name: "/promote", description: "Promuovi un giocatore di rango", params: ["username", "newRank"] },
@@ -1847,15 +1798,13 @@
         return;
       }
 
-      const avatar = await fetchRobloxAvatarByUsername(robloxName);
-
       state.users.push({
         username: username,
         passwordHash: await sha256(tempPassword),
         displayName: displayName,
         role: role,
         robloxName: robloxName,
-        avatar: avatar,
+        avatar: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTUwIiBoZWlnaHQ9IjE1MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTUwIiBoZWlnaHQ9IjE1MCIgZmlsbD0iIzBlMWExYSIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LXNpemU9IjEyIiBmaWxsPSIjZTBkN2ZmIiBkeT0iLjNlbSIgdGV4dC1hbmNob3I9Im1pZGRsZSI+QXZhdGFyPC90ZXh0Pjwvc3ZnPg==",
         online: false,
         mustChangePassword: true,
         tempPasswordPlain: tempPassword
@@ -1874,9 +1823,6 @@
 
       user.displayName = elements.profileDisplayName.value.trim() || user.displayName;
       user.robloxName = elements.profileRobloxName.value.trim() || user.robloxName;
-      if (user.robloxName) {
-        user.avatar = await fetchRobloxAvatarByUsername(user.robloxName);
-      }
       saveState();
       renderAll();
       showToast("Profilo aggiornato", "Le modifiche sono state salvate.");
