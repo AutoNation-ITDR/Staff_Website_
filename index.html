@@ -838,11 +838,11 @@
 
         <nav id="sidebar-nav" class="sidebar-nav">
           <button class="nav-link active" data-section="dashboard">Panoramica</button>
+          <button class="nav-link" data-section="profile">Area Personale</button>
           <button class="nav-link" data-section="moderation">Moderazione</button>
           <button class="nav-link" data-section="commands">Comandi ERLC</button>
           <button class="nav-link" data-section="logs">Logs</button>
           <button class="nav-link" data-section="manager">Staff Manager</button>
-          <button class="nav-link" data-section="profile">Area Personale</button>
         </nav>
 
         <div class="sidebar-user">
@@ -1179,42 +1179,13 @@
           displayName: "Admin Houston",
           role: "Manager",
           robloxName: "Builderman",
-          avatar: "https://tr.rbxcdn.com/180DAY-6f5f2d2f73728d0f0d3a56d98d0d2178/150/150/AvatarHeadshot/Png",
+          avatar: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTUwIiBoZWlnaHQ9IjE1MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTUwIiBoZWlnaHQ9IjE1MCIgZmlsbD0iIzBlMWExYSIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LXNpemU9IjEyIiBmaWxsPSIjZTBkN2ZmIiBkeT0iLjNlbSIgdGV4dC1hbmNob3I9Im1pZGRsZSI+QXZhdGFyPC90ZXh0Pjwvc3ZnPg==",
           online: true,
-          mustChangePassword: false
-        },
-        {
-          username: "moderatore",
-          passwordHash: "09fbcc458fb3430db7ec54ee95635e7fbc06ccfd982b49c55ec53ab8ac2397e7",
-          displayName: "Moderatore RP",
-          role: "Moderatore",
-          robloxName: "Roblox",
-          avatar: "https://tr.rbxcdn.com/180DAY-42f5e43d7c01d229f4bb35f3d8f385e6/150/150/AvatarHeadshot/Png",
-          online: true,
-          mustChangePassword: false
-        },
-        {
-          username: "alex.manager",
-          passwordHash: "866485796cfa8d7c0cf7111640205b83076433547577511d81f8030ae99ecea5",
-          displayName: "Alex Ranger",
-          role: "Amministratore",
-          robloxName: "Alexnewtron",
-          avatar: "https://tr.rbxcdn.com/180DAY-0bf8676c88dbff208221f0f91af6967d/150/150/AvatarHeadshot/Png",
-          online: false,
           mustChangePassword: false
         }
       ],
-      players: [
-        { id: 1, robloxName: "Luca_RP", warns: 2, activeBanUntil: null, lastReason: "Fail RP leggero" },
-        { id: 2, robloxName: "TexasDriver", warns: 3, activeBanUntil: hoursFromNow(18), lastReason: "Powergaming" },
-        { id: 3, robloxName: "SheriffMax", warns: 1, activeBanUntil: null, lastReason: "Comportamento tossico" },
-        { id: 4, robloxName: "RancherJoe", warns: 4, activeBanUntil: hoursFromNow(32), lastReason: "VDM ripetuto" }
-      ],
-      logs: [
-        createLog("warn", "Luca_RP", "Fail RP leggero", "Admin Houston", null, false),
-        createLog("ban", "TexasDriver", "Powergaming", "Admin Houston", hoursFromNow(18), true),
-        createLog("kick", "SheriffMax", "Richiamo verbale ignorato", "Moderatore RP", null, false)
-      ]
+      players: [],
+      logs: []
     };
 
     function cloneData(data) {
