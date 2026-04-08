@@ -1,0 +1,335 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Houston State Staff Panel</title>
+  <meta name="description" content="Pannello staff Houston Roleplay con moderazione, dashboard, team e profilo.">
+  <meta name="theme-color" content="#0b0f1b">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="img/houston-logo.png" type="image/png">
+</head>
+<body>
+  <div class="app-shell">
+    <section class="login-screen" id="login-screen">
+      <div class="login-backdrop"></div>
+      <div class="login-panel">
+        <div class="login-brand">
+          <img class="brand-logo" src="img/houston-logo.png" alt="Houston Roleplay">
+          <div class="brand-copy">
+            <p class="eyebrow">Houston State</p>
+            <h1>Staff Management</h1>
+            <p class="muted">Moderazione Roblox-style con accesso rapido, statistiche e log completi.</p>
+          </div>
+        </div>
+
+        <div class="login-card">
+          <div class="card-glow"></div>
+          <p class="eyebrow">Accesso Staff</p>
+          <h2>Accedi al pannello</h2>
+          <p class="muted login-note">Ispirato al layout che hai inviato: dark UI, glow sottile e form centrato.</p>
+
+          <form id="login-form" class="stack">
+            <label class="field">
+              <span>Username</span>
+              <input id="login-username" type="text" autocomplete="username" placeholder="Inserisci username">
+            </label>
+
+            <label class="field">
+              <span>Password</span>
+              <div class="password-wrap">
+                <input id="login-password" type="password" autocomplete="current-password" placeholder="Inserisci password">
+                <button id="toggle-password" type="button" class="ghost-btn small-btn" aria-label="Mostra password">Mostra</button>
+              </div>
+            </label>
+
+            <div class="password-meter">
+              <span id="meter-bar-1"></span>
+              <span id="meter-bar-2"></span>
+              <span id="meter-bar-3"></span>
+              <span id="meter-bar-4"></span>
+            </div>
+
+            <div class="demo-box">
+              <p>Credenziali di test</p>
+              <p><strong>admin</strong> / password123</p>
+              <p><strong>moderatore</strong> / mod123</p>
+            </div>
+
+            <button class="primary-btn" type="submit">Entra nella dashboard</button>
+            <p id="login-error" class="error-text" hidden>Credenziali non valide.</p>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <section class="dashboard-shell hidden" id="dashboard-shell">
+      <aside class="sidebar">
+        <div class="sidebar-top">
+          <div class="brand-mini">
+            <img class="mini-logo" src="img/houston-logo.png" alt="Houston Roleplay">
+            <div>
+              <h2>Houston RP</h2>
+              <p>Staff Panel</p>
+            </div>
+          </div>
+          <button id="sidebar-toggle" class="ghost-btn small-btn mobile-only" type="button">Menu</button>
+        </div>
+
+        <nav id="sidebar-nav" class="sidebar-nav">
+          <button class="nav-link active" data-section="dashboard">Panoramica</button>
+          <button class="nav-link" data-section="moderation">Moderazione</button>
+          <button class="nav-link" data-section="logs">Logs</button>
+          <button class="nav-link" data-section="team">Team Staff</button>
+          <button class="nav-link" data-section="profile">Area Personale</button>
+        </nav>
+
+        <div class="sidebar-user">
+          <img id="sidebar-avatar" class="avatar" src="" alt="Avatar staff">
+          <div>
+            <p id="sidebar-name"></p>
+            <span id="sidebar-role"></span>
+          </div>
+        </div>
+      </aside>
+
+      <main class="main-panel">
+        <header class="topbar">
+          <div>
+            <p class="eyebrow">Houston State Roleplay</p>
+            <h1 id="section-title">Dashboard</h1>
+          </div>
+          <div class="topbar-actions">
+            <div class="status-pill">
+              <span class="status-dot"></span>
+              <span id="online-counter-label">0 staff online</span>
+            </div>
+            <button id="logout-btn" class="danger-btn" type="button">Logout</button>
+          </div>
+        </header>
+
+        <section id="section-dashboard" class="content-section active">
+          <div class="stats-grid" id="stats-grid"></div>
+
+          <div class="content-grid two-col">
+            <article class="panel">
+              <div class="panel-head">
+                <div>
+                  <p class="eyebrow">Live Feed</p>
+                  <h3>Azioni recenti</h3>
+                </div>
+              </div>
+              <div id="recent-actions" class="feed-list"></div>
+            </article>
+
+            <article class="panel">
+              <div class="panel-head">
+                <div>
+                  <p class="eyebrow">Server Snapshot</p>
+                  <h3>Ban attivi e staff</h3>
+                </div>
+              </div>
+              <div class="snapshot-grid">
+                <div class="snapshot-card">
+                  <span>Ban attivi</span>
+                  <strong id="active-bans-value">0</strong>
+                </div>
+                <div class="snapshot-card">
+                  <span>Warn distribuiti</span>
+                  <strong id="warn-total-value">0</strong>
+                </div>
+                <div class="snapshot-card">
+                  <span>Kick oggi</span>
+                  <strong id="kicks-today-value">0</strong>
+                </div>
+                <div class="snapshot-card">
+                  <span>Staff online</span>
+                  <strong id="staff-online-value">0</strong>
+                </div>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section id="section-moderation" class="content-section">
+          <div class="content-grid two-col">
+            <article class="panel">
+              <div class="panel-head">
+                <div>
+                  <p class="eyebrow">Sistema di Moderazione</p>
+                  <h3>Warn, Kick e Ban</h3>
+                </div>
+                <span class="chip">3 warn = 24h ban • 5 warn = 48h ban</span>
+              </div>
+
+              <form id="moderation-form" class="stack">
+                <label class="field">
+                  <span>Giocatore Roblox</span>
+                  <select id="player-select"></select>
+                </label>
+                <label class="field">
+                  <span>Azione</span>
+                  <select id="action-select">
+                    <option value="warn">Warn</option>
+                    <option value="kick">Kick</option>
+                    <option value="ban">Ban</option>
+                  </select>
+                </label>
+                <label class="field">
+                  <span>Motivo</span>
+                  <textarea id="reason-input" rows="4" placeholder="Scrivi il motivo della punizione"></textarea>
+                </label>
+                <label class="field" id="duration-field">
+                  <span>Durata ban</span>
+                  <select id="ban-duration">
+                    <option value="24">24 ore</option>
+                    <option value="48">48 ore</option>
+                    <option value="168">7 giorni</option>
+                  </select>
+                </label>
+                <button class="primary-btn" type="submit">Esegui azione</button>
+              </form>
+            </article>
+
+            <article class="panel">
+              <div class="panel-head">
+                <div>
+                  <p class="eyebrow">Player Registry</p>
+                  <h3>Stato giocatori</h3>
+                </div>
+              </div>
+              <div id="player-cards" class="player-grid"></div>
+            </article>
+          </div>
+        </section>
+
+        <section id="section-logs" class="content-section">
+          <div class="content-grid two-col">
+            <article class="panel">
+              <div class="panel-head">
+                <div>
+                  <p class="eyebrow">Logs Completi</p>
+                  <h3>Cronologia moderazione</h3>
+                </div>
+              </div>
+              <div id="logs-list" class="feed-list"></div>
+            </article>
+
+            <article class="panel">
+              <div class="panel-head">
+                <div>
+                  <p class="eyebrow">Discord Preview</p>
+                  <h3>Simulazione invio log</h3>
+                </div>
+              </div>
+              <div id="discord-preview" class="discord-card"></div>
+            </article>
+          </div>
+        </section>
+
+        <section id="section-team" class="content-section">
+          <div class="content-grid two-col">
+            <article class="panel">
+              <div class="panel-head">
+                <div>
+                  <p class="eyebrow">Team Staff Management</p>
+                  <h3>Aggiungi staff</h3>
+                </div>
+              </div>
+              <form id="team-form" class="stack">
+                <label class="field">
+                  <span>Username</span>
+                  <input id="staff-username" type="text" placeholder="Nuovo staff">
+                </label>
+                <label class="field">
+                  <span>Nome visualizzato</span>
+                  <input id="staff-display-name" type="text" placeholder="Nome visualizzato">
+                </label>
+                <label class="field">
+                  <span>Ruolo</span>
+                  <select id="staff-role">
+                    <option value="Moderatore">Moderatore</option>
+                    <option value="Amministratore">Amministratore</option>
+                    <option value="Manager">Manager</option>
+                  </select>
+                </label>
+                <label class="field">
+                  <span>Avatar URL</span>
+                  <input id="staff-avatar" type="url" placeholder="https://tr.rbxcdn.com/...">
+                </label>
+                <button class="primary-btn" type="submit">Aggiungi membro</button>
+              </form>
+            </article>
+
+            <article class="panel">
+              <div class="panel-head">
+                <div>
+                  <p class="eyebrow">Visualizzazione Team</p>
+                  <h3>Staff attuale</h3>
+                </div>
+              </div>
+              <div id="team-grid" class="team-grid"></div>
+            </article>
+          </div>
+        </section>
+
+        <section id="section-profile" class="content-section">
+          <div class="content-grid two-col">
+            <article class="panel">
+              <div class="panel-head">
+                <div>
+                  <p class="eyebrow">Area Personale</p>
+                  <h3>Modifica profilo</h3>
+                </div>
+              </div>
+              <div class="profile-header">
+                <img id="profile-avatar" class="avatar large" src="" alt="Avatar profilo">
+                <div>
+                  <h3 id="profile-name"></h3>
+                  <p id="profile-role" class="muted"></p>
+                </div>
+              </div>
+              <form id="profile-form" class="stack">
+                <label class="field">
+                  <span>Nome visualizzato</span>
+                  <input id="profile-display-name" type="text">
+                </label>
+                <label class="field">
+                  <span>Avatar Roblox URL</span>
+                  <input id="profile-avatar-url" type="url">
+                </label>
+                <button class="primary-btn" type="submit">Salva profilo</button>
+              </form>
+            </article>
+
+            <article class="panel">
+              <div class="panel-head">
+                <div>
+                  <p class="eyebrow">Sicurezza</p>
+                  <h3>Cambio password</h3>
+                </div>
+              </div>
+              <form id="password-form" class="stack">
+                <label class="field">
+                  <span>Nuova password</span>
+                  <input id="new-password" type="password" placeholder="Almeno 8 caratteri">
+                </label>
+                <ul class="rules-list">
+                  <li id="rule-length">Almeno 8 caratteri</li>
+                  <li id="rule-upper">Una lettera maiuscola</li>
+                  <li id="rule-number">Un numero</li>
+                  <li id="rule-special">Un carattere speciale</li>
+                </ul>
+                <button class="primary-btn" type="submit">Aggiorna password</button>
+              </form>
+            </article>
+          </div>
+        </section>
+      </main>
+    </section>
+  </div>
+
+  <div id="toast-container" class="toast-container" aria-live="polite"></div>
+  <script src="js/app.js"></script>
+</body>
+</html>
