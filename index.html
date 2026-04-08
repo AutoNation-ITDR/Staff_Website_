@@ -1912,9 +1912,25 @@
       updateCommandParams();
     }
 
+    async function updateExistingAvatars() {
+      for (let i = 0; i < state.users.length; i += 1) {
+        const user = state.users[i];
+        if (user.robloxName && (!user.avatar || user.avatar.startsWith("data:image/svg+xml"))) {
+          try {
+            user.avatar = await fetchRobloxAvatarByUsername(user.robloxName);
+          } catch (error) {
+            console.warn("Failed to update avatar for " + user.robloxName);
+          }
+        }
+      }
+      saveState();
+    }
+
     function init() {
       elements.brandLogo.src = EMBEDDED_LOGO;
       elements.miniLogo.src = EMBEDDED_LOGO;
+
+      updateExistingAvatars();
 
       elements.loginForm.addEventListener("submit", handleLogin);
       elements.togglePassword.addEventListener("click", function () {
