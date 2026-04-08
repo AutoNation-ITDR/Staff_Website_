@@ -1,0 +1,2150 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Houston State Staff Panel</title>
+  <meta name="description" content="Pannello staff Houston Roleplay con moderazione, dashboard, team e profilo.">
+  <meta name="theme-color" content="#0b0f1b">
+  <style>
+    :root {
+      --bg: #0a0e1a;
+      --bg-soft: #131929;
+      --bg-lighter: #1a2332;
+      --panel: rgba(19, 25, 41, 0.95);
+      --panel-border: rgba(94, 203, 255, 0.25);
+      --text: #f0f4ff;
+      --text-secondary: #a8c5e0;
+      --muted: #8fa3bf;
+      --accent: #00d4ff;
+      --accent-glow: #00a8cc;
+      --accent-strong: #0088ff;
+      --gold: #ffa500;
+      --warn: #ff9800;
+      --danger: #ff5252;
+      --success: #4ee29f;
+      --shadow: 0 24px 80px rgba(0, 0, 0, 0.6);
+      --shadow-light: 0 8px 32px rgba(0, 212, 255, 0.15);
+      --sidebar-width: 280px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      min-height: 100%;
+      background:
+        radial-gradient(circle at 20% 50%, rgba(0, 212, 255, 0.1), transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(0, 168, 204, 0.08), transparent 50%),
+        linear-gradient(180deg, #0a0e1a 0%, #05080f 100%);
+      color: var(--text);
+    }
+
+    body {
+      overflow-x: hidden;
+    }
+
+    button,
+    input,
+    select,
+    textarea {
+      font: inherit;
+    }
+
+    img {
+      display: block;
+      max-width: 100%;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .app-shell {
+      min-height: 100vh;
+    }
+
+    .login-screen {
+      position: relative;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 32px;
+    }
+
+    .login-backdrop {
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(135deg, rgba(18, 35, 63, 0.88), rgba(7, 10, 16, 0.78)),
+        radial-gradient(circle at center, rgba(94, 203, 255, 0.12), transparent 32%);
+      opacity: 0.9;
+      filter: blur(2px);
+    }
+
+    .login-panel {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 28px;
+      width: min(1180px, 100%);
+    }
+
+    .login-brand,
+    .login-card,
+    .panel,
+    .sidebar,
+    .topbar {
+      border: 1px solid var(--panel-border);
+      background: linear-gradient(135deg, rgba(19, 25, 41, 0.97), rgba(10, 14, 26, 0.98));
+      box-shadow: var(--shadow), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(30px);
+      -webkit-backdrop-filter: blur(30px);
+    }
+
+    .login-brand {
+      border-radius: 24px;
+      padding: 48px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 28px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .login-brand::before {
+      content: "";
+      position: absolute;
+      top: -50%;
+      right: -50%;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(0, 212, 255, 0.15), transparent);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .brand-logo {
+      width: min(320px, 100%);
+      filter: drop-shadow(0 20px 40px rgba(0, 212, 255, 0.2));
+      object-fit: contain;
+      z-index: 1;
+    }
+
+    .eyebrow {
+      margin: 0 0 8px;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      font-size: 0.75rem;
+    }
+
+    .brand-copy h1,
+    .login-card h2,
+    .topbar h1,
+    .panel h3 {
+      margin: 0;
+      letter-spacing: -0.04em;
+    }
+
+    .brand-copy h1 {
+      font-size: clamp(2.4rem, 5vw, 4.6rem);
+      line-height: 0.95;
+    }
+
+    .muted {
+      color: var(--muted);
+    }
+
+    .login-card {
+      position: relative;
+      border-radius: 20px;
+      padding: 45px;
+      overflow: hidden;
+      background: linear-gradient(135deg, rgba(25, 33, 52, 0.98), rgba(15, 20, 35, 0.99)) !important;
+    }
+
+    .card-glow {
+      position: absolute;
+      inset: auto -20% -25% auto;
+      width: 320px;
+      height: 320px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(0, 212, 255, 0.25), transparent 70%);
+      pointer-events: none;
+      filter: blur(40px);
+    }
+
+    .login-note {
+      margin-top: 12px;
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+
+    .stack {
+      display: grid;
+      gap: 16px;
+    }
+
+    .field {
+      display: grid;
+      gap: 8px;
+    }
+
+    .field span {
+      color: #d6e0f8;
+      font-size: 0.92rem;
+    }
+
+    .field input,
+    .field select,
+    .field textarea {
+      width: 100%;
+      border: 1px solid rgba(138, 177, 235, 0.14);
+      border-radius: 18px;
+      background: rgba(10, 16, 29, 0.92);
+      color: var(--text);
+      padding: 15px 16px;
+      outline: none;
+    }
+
+    .field input:focus,
+    .field select:focus,
+    .field textarea:focus {
+      border-color: rgba(94, 203, 255, 0.72);
+      box-shadow: 0 0 0 4px rgba(94, 203, 255, 0.1);
+    }
+
+    .password-wrap {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+    }
+
+    .password-meter {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+
+    .password-meter span {
+      height: 8px;
+      border-radius: 999px;
+      background: rgba(134, 154, 191, 0.18);
+    }
+
+    .password-meter span.active {
+      background: linear-gradient(90deg, var(--accent), #48f0ff);
+      box-shadow: 0 0 18px rgba(94, 203, 255, 0.35);
+    }
+
+    .login-helper,
+    .demo-box,
+    .chip,
+    .status-pill,
+    .snapshot-card,
+    .player-card,
+    .team-member,
+    .discord-card {
+      border: 1px solid rgba(137, 175, 236, 0.12);
+      background: rgba(16, 23, 38, 0.72);
+    }
+
+    .demo-box,
+    .login-helper {
+      border-radius: 18px;
+      padding: 14px 16px;
+      color: var(--muted);
+    }
+
+    .demo-box p,
+    .login-helper p {
+      margin: 4px 0;
+    }
+
+    .primary-btn,
+    .danger-btn,
+    .ghost-btn {
+      border: 0;
+      border-radius: 18px;
+      padding: 14px 18px;
+      cursor: pointer;
+    }
+
+    .primary-btn {
+      background: linear-gradient(135deg, var(--accent), var(--accent-strong));
+      color: #03101f;
+      font-weight: 700;
+    }
+
+    .danger-btn {
+      background: linear-gradient(135deg, #ff7a86, #dc435d);
+      color: white;
+      font-weight: 700;
+    }
+
+    .ghost-btn {
+      background: rgba(94, 203, 255, 0.08);
+      color: var(--text);
+      border: 1px solid rgba(94, 203, 255, 0.18);
+    }
+
+    .small-btn {
+      padding: 10px 14px;
+    }
+
+    .error-text {
+      margin: 0;
+      color: var(--danger);
+    }
+
+    .dashboard-shell {
+      display: grid;
+      grid-template-columns: var(--sidebar-width) minmax(0, 1fr);
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      border-radius: 0 32px 32px 0;
+      padding: 22px 18px;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      gap: 18px;
+    }
+
+    .sidebar-top,
+    .brand-mini,
+    .sidebar-user,
+    .topbar,
+    .panel-head,
+    .profile-header,
+    .discord-head,
+    .team-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .brand-mini h2,
+    .brand-mini p,
+    .sidebar-user p,
+    .sidebar-user span,
+    .topbar p,
+    .topbar h1 {
+      margin: 0;
+    }
+
+    .mini-logo {
+      width: 56px;
+      height: 56px;
+      object-fit: contain;
+    }
+
+    .sidebar-nav {
+      display: grid;
+      align-content: start;
+      gap: 10px;
+    }
+
+    .nav-link {
+      text-align: left;
+      border: 1px solid transparent;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.02);
+      color: #d5deef;
+      padding: 14px 16px;
+      cursor: pointer;
+    }
+
+    .nav-link.active {
+      background: linear-gradient(135deg, rgba(94, 203, 255, 0.2), rgba(24, 150, 255, 0.08));
+      border-color: rgba(94, 203, 255, 0.32);
+      color: white;
+    }
+
+    .avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 18px;
+      object-fit: cover;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .avatar.large {
+      width: 84px;
+      height: 84px;
+      border-radius: 24px;
+    }
+
+    .main-panel {
+      padding: 22px;
+    }
+
+    .topbar {
+      border-radius: 28px;
+      padding: 18px 22px;
+      margin-bottom: 18px;
+    }
+
+    .topbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .status-pill {
+      border-radius: 999px;
+      padding: 12px 14px;
+      color: var(--muted);
+    }
+
+    .status-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--success);
+      box-shadow: 0 0 18px rgba(78, 226, 159, 0.5);
+      display: inline-block;
+      margin-right: 8px;
+    }
+
+    .content-section {
+      display: none;
+    }
+
+    .content-section.active {
+      display: block;
+    }
+
+    .stats-grid,
+    .snapshot-grid,
+    .player-grid,
+    .team-grid,
+    .content-grid {
+      display: grid;
+      gap: 18px;
+    }
+
+    .stats-grid {
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      margin-bottom: 18px;
+    }
+
+    .stat-card,
+    .snapshot-card,
+    .player-card,
+    .team-member {
+      border-radius: 24px;
+      padding: 18px;
+    }
+
+    .stat-card {
+      background: linear-gradient(180deg, rgba(20, 29, 47, 0.95), rgba(9, 13, 23, 0.95));
+      border: 1px solid rgba(124, 157, 219, 0.14);
+      box-shadow: var(--shadow);
+    }
+
+    .stat-value {
+      display: block;
+      margin-top: 8px;
+      font-size: 2rem;
+      font-weight: 700;
+    }
+
+    .content-grid.two-col {
+      grid-template-columns: 1.05fr 0.95fr;
+    }
+
+    .panel {
+      border-radius: 28px;
+      padding: 22px;
+    }
+
+    .chip {
+      border-radius: 999px;
+      padding: 10px 14px;
+      color: var(--gold);
+      font-size: 0.82rem;
+    }
+
+    .feed-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .feed-item {
+      border-radius: 20px;
+      padding: 15px;
+      background: rgba(13, 20, 35, 0.88);
+      border: 1px solid rgba(122, 165, 235, 0.12);
+    }
+
+    .feed-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+
+    .feed-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .badge-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      font-size: 1.15rem;
+    }
+
+    .badge-icon.warn {
+      background: rgba(255, 181, 72, 0.16);
+      color: var(--warn);
+    }
+
+    .badge-icon.kick {
+      background: rgba(94, 203, 255, 0.16);
+      color: var(--accent);
+    }
+
+    .badge-icon.ban {
+      background: rgba(255, 110, 127, 0.16);
+      color: var(--danger);
+    }
+
+    .badge-icon.command {
+      background: rgba(94, 203, 255, 0.1);
+      color: var(--text-secondary);
+    }
+
+    .feed-meta,
+    .feed-description {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .snapshot-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .snapshot-card strong {
+      display: block;
+      margin-top: 10px;
+      font-size: 1.7rem;
+    }
+
+    .player-grid,
+    .team-grid {
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    }
+
+    .player-card {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .player-stats {
+      display: flex;
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .player-stats span {
+      flex: 1;
+      border-radius: 14px;
+      padding: 10px;
+      background: rgba(255, 255, 255, 0.03);
+      text-align: center;
+    }
+
+    .discord-card {
+      border-radius: 24px;
+      padding: 18px;
+      min-height: 240px;
+    }
+
+    .discord-head {
+      margin-bottom: 14px;
+    }
+
+    .discord-stripe {
+      width: 6px;
+      height: 48px;
+      border-radius: 99px;
+      background: linear-gradient(180deg, var(--accent), var(--gold));
+    }
+
+    .discord-body p {
+      margin: 6px 0;
+      color: var(--muted);
+    }
+
+    .team-member {
+      display: grid;
+      gap: 14px;
+    }
+
+    .team-head {
+      justify-content: flex-start;
+    }
+
+    .role-pill {
+      display: inline-flex;
+      align-items: center;
+      width: fit-content;
+      border-radius: 999px;
+      padding: 8px 12px;
+      background: rgba(94, 203, 255, 0.1);
+      color: var(--accent);
+    }
+
+    .team-action {
+      width: fit-content;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.03);
+      color: white;
+      padding: 10px 14px;
+      cursor: pointer;
+    }
+
+    .rules-list {
+      margin: 0;
+      padding-left: 20px;
+      color: var(--muted);
+    }
+
+    .rules-list li {
+      margin: 7px 0;
+    }
+
+    .rules-list li.valid {
+      color: var(--success);
+    }
+
+    .manager-only-lock {
+      border: 1px dashed rgba(255, 255, 255, 0.12);
+      border-radius: 22px;
+      padding: 22px;
+      color: var(--muted);
+      text-align: center;
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .manager-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .manager-table th,
+    .manager-table td {
+      padding: 12px 10px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      text-align: left;
+      color: var(--muted);
+      vertical-align: middle;
+    }
+
+    .manager-table th {
+      color: var(--text);
+      font-size: 0.86rem;
+    }
+
+    .pill-alert {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      padding: 6px 10px;
+      background: rgba(255, 181, 72, 0.12);
+      color: var(--warn);
+      font-size: 0.82rem;
+    }
+
+    .toast-container {
+      position: fixed;
+      right: 18px;
+      bottom: 18px;
+      display: grid;
+      gap: 10px;
+      z-index: 100;
+    }
+
+    .toast {
+      min-width: 240px;
+      border-radius: 18px;
+      padding: 14px 16px;
+      border: 1px solid rgba(137, 175, 236, 0.12);
+      background: rgba(12, 17, 30, 0.96);
+      box-shadow: var(--shadow);
+    }
+
+    .toast strong,
+    .toast p {
+      margin: 0;
+    }
+
+    .toast p {
+      margin-top: 4px;
+      color: var(--muted);
+    }
+
+    .mobile-only {
+      display: none;
+    }
+
+    @media (max-width: 1120px) {
+      .login-panel,
+      .content-grid.two-col {
+        grid-template-columns: 1fr;
+      }
+
+      .stats-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 860px) {
+      .dashboard-shell {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        position: relative;
+        height: auto;
+        border-radius: 0 0 28px 28px;
+      }
+
+      .sidebar-nav {
+        display: none;
+      }
+
+      .sidebar-nav.open {
+        display: grid;
+      }
+
+      .mobile-only {
+        display: inline-flex;
+      }
+
+      .stats-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 620px) {
+      .login-screen,
+      .main-panel {
+        padding: 14px;
+      }
+
+      .login-brand,
+      .login-card,
+      .panel,
+      .topbar {
+        border-radius: 22px;
+      }
+
+      .stats-grid,
+      .snapshot-grid,
+      .player-grid,
+      .team-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .topbar,
+      .topbar-actions {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="app-shell">
+  <section class="login-screen" id="login-screen">
+    <div class="login-backdrop"></div>
+    <div class="login-panel">
+      <div class="login-brand">
+        <img class="brand-logo" id="brand-logo" alt="Houston Roleplay">
+        <div class="brand-copy">
+          <p class="eyebrow">Houston State</p>
+          <h1>Staff Management</h1>
+          <p class="muted">Pannello staff completo per Houston State Roleplay. Gestisci warn, kick e ban direttamente dal browser, esegui comandi ERLC, monitora le statistiche in tempo reale e consulta i log di ogni azione moderativa.</p>
+          <div style="display:grid;gap:8px;margin-top:12px;">
+            <div style="display:flex;align-items:center;gap:8px;color:var(--accent);font-size:0.88rem;">
+              <span>✓</span><span>API Roblox integrata — avatar e ricerca giocatori</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;color:var(--accent);font-size:0.88rem;">
+              <span>✓</span><span>18 comandi ERLC eseguibili dal pannello</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;color:var(--accent);font-size:0.88rem;">
+              <span>✓</span><span>Database logs — ogni azione salvata e tracciata</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;color:var(--accent);font-size:0.88rem;">
+              <span>✓</span><span>Auto-ban intelligente a 3 e 5 warn</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="login-card">
+        <div class="card-glow"></div>
+        <p class="eyebrow">Accesso Staff</p>
+        <h2>Accedi al pannello</h2>
+        <p class="muted login-note">© 2025 Houston State Roleplay - Panel Amministrativo</p>
+
+        <form id="login-form" class="stack">
+          <label class="field">
+            <span>Username</span>
+            <input id="login-username" type="text" autocomplete="username" placeholder="Inserisci username">
+          </label>
+
+          <label class="field">
+            <span>Password</span>
+            <div class="password-wrap">
+              <input id="login-password" type="password" autocomplete="current-password" placeholder="Inserisci password">
+              <button id="toggle-password" type="button" class="ghost-btn small-btn">Mostra</button>
+            </div>
+          </label>
+
+          <div class="password-meter">
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+
+          <div class="login-helper">
+            <p>Accesso riservato allo staff registrato.</p>
+            <p>Le password non sono visibili nella home e vengono salvate solo come hash.</p>
+          </div>
+
+          <div class="demo-box">
+            <p><strong style="color:var(--accent)">Credenziali test</strong></p>
+            <p>admin / password123 — Manager</p>
+            <p>moderatore / mod123 — Moderatore</p>
+          </div>
+
+          <button class="primary-btn" type="submit">Entra nella dashboard</button>
+          <p id="login-error" class="error-text" hidden>Credenziali non valide.</p>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <section class="dashboard-shell hidden" id="dashboard-shell">
+    <aside class="sidebar">
+      <div class="sidebar-top">
+        <div class="brand-mini">
+          <img class="mini-logo" id="mini-logo" alt="Houston Roleplay">
+          <div>
+            <h2>Houston RP</h2>
+            <p>Staff Panel</p>
+          </div>
+        </div>
+        <button id="sidebar-toggle" class="ghost-btn small-btn mobile-only" type="button">Menu</button>
+      </div>
+
+      <nav id="sidebar-nav" class="sidebar-nav">
+        <button class="nav-link active" data-section="dashboard">Panoramica</button>
+        <button class="nav-link" data-section="moderation">Moderazione</button>
+        <button class="nav-link" data-section="commands">Comandi ERLC</button>
+        <button class="nav-link" data-section="logs">Logs</button>
+        <button class="nav-link" data-section="manager">Staff Manager</button>
+        <button class="nav-link" data-section="profile">Area Personale</button>
+      </nav>
+
+      <div class="sidebar-user">
+        <img id="sidebar-avatar" class="avatar" src="" alt="Avatar staff">
+        <div>
+          <p id="sidebar-name"></p>
+          <span id="sidebar-role"></span>
+        </div>
+      </div>
+    </aside>
+
+    <main class="main-panel">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Houston State Roleplay</p>
+          <h1 id="section-title">Dashboard</h1>
+        </div>
+        <div class="topbar-actions">
+          <div class="status-pill">
+            <span class="status-dot"></span>
+            <span id="online-counter-label">0 staff online</span>
+          </div>
+          <button id="logout-btn" class="danger-btn" type="button">Logout</button>
+        </div>
+      </header>
+
+      <section id="section-dashboard" class="content-section active">
+        <div class="stats-grid" id="stats-grid"></div>
+
+        <div class="content-grid two-col">
+          <article class="panel">
+            <div class="panel-head">
+              <div>
+                <p class="eyebrow">Live Feed</p>
+                <h3>Azioni recenti</h3>
+              </div>
+            </div>
+            <div id="recent-actions" class="feed-list"></div>
+          </article>
+
+          <article class="panel">
+            <div class="panel-head">
+              <div>
+                <p class="eyebrow">Server Snapshot</p>
+                <h3>Ban attivi e staff</h3>
+              </div>
+            </div>
+            <div class="snapshot-grid">
+              <div class="snapshot-card">
+                <span>Ban attivi</span>
+                <strong id="active-bans-value">0</strong>
+              </div>
+              <div class="snapshot-card">
+                <span>Warn distribuiti</span>
+                <strong id="warn-total-value">0</strong>
+              </div>
+              <div class="snapshot-card">
+                <span>Kick oggi</span>
+                <strong id="kicks-today-value">0</strong>
+              </div>
+              <div class="snapshot-card">
+                <span>Staff online</span>
+                <strong id="staff-online-value">0</strong>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section id="section-moderation" class="content-section">
+        <div class="content-grid two-col">
+          <article class="panel">
+            <div class="panel-head">
+              <div>
+                <p class="eyebrow">Sistema di Moderazione</p>
+                <h3>Warn, Kick e Ban</h3>
+              </div>
+              <span class="chip">3 warn = 24h ban • 5 warn = 48h ban</span>
+            </div>
+
+            <form id="moderation-form" class="stack">
+              <label class="field">
+                <span>Cerca giocatore Roblox per nome</span>
+                <div style="display:grid;grid-template-columns:1fr auto;gap:8px;">
+                  <input id="roblox-search-input" type="text" placeholder="Username Roblox (es. Luca_RP)">
+                  <button id="roblox-search-btn" type="button" class="ghost-btn small-btn">Cerca</button>
+                </div>
+              </label>
+              <div id="roblox-search-result" style="display:none;align-items:center;gap:12px;padding:12px;background:rgba(0,212,255,0.06);border:1px solid rgba(0,212,255,0.2);border-radius:14px;">
+                <img id="roblox-found-avatar" src="" alt="Avatar" style="width:48px;height:48px;border-radius:14px;object-fit:cover;">
+                <div>
+                  <strong id="roblox-found-name"></strong>
+                  <p class="muted" style="margin:2px 0;font-size:0.85rem;" id="roblox-found-id"></p>
+                </div>
+                <button id="roblox-add-player-btn" type="button" class="primary-btn small-btn" style="margin-left:auto;">Aggiungi</button>
+              </div>
+              <label class="field">
+                <span>Giocatore</span>
+                <select id="player-select"></select>
+              </label>
+              <label class="field">
+                <span>Azione</span>
+                <select id="action-select">
+                  <option value="warn">Warn</option>
+                  <option value="kick">Kick</option>
+                  <option value="ban">Ban</option>
+                </select>
+              </label>
+              <label class="field">
+                <span>Motivo</span>
+                <textarea id="reason-input" rows="4" placeholder="Scrivi il motivo della punizione"></textarea>
+              </label>
+              <label class="field hidden" id="duration-field">
+                <span>Durata ban</span>
+                <select id="ban-duration">
+                  <option value="24">24 ore</option>
+                  <option value="48">48 ore</option>
+                  <option value="168">7 giorni</option>
+                </select>
+              </label>
+              <button class="primary-btn" type="submit">Esegui azione</button>
+            </form>
+          </article>
+
+          <article class="panel">
+            <div class="panel-head">
+              <div>
+                <p class="eyebrow">Player Registry</p>
+                <h3>Stato giocatori</h3>
+              </div>
+            </div>
+            <div id="player-cards" class="player-grid"></div>
+          </article>
+        </div>
+      </section>
+
+      <section id="section-logs" class="content-section">
+        <div class="content-grid two-col">
+          <article class="panel">
+            <div class="panel-head">
+              <div>
+                <p class="eyebrow">Logs Completi</p>
+                <h3>Cronologia moderazione</h3>
+              </div>
+            </div>
+            <div id="logs-list" class="feed-list"></div>
+          </article>
+
+          <article class="panel">
+            <div class="panel-head">
+              <div>
+                <p class="eyebrow">Discord Preview</p>
+                <h3>Simulazione invio log</h3>
+              </div>
+            </div>
+            <div id="discord-preview" class="discord-card"></div>
+          </article>
+        </div>
+      </section>
+
+      <section id="section-commands" class="content-section">
+        <div class="content-grid">
+          <article class="panel">
+            <div class="panel-head">
+              <div>
+                <p class="eyebrow">Sistema Comandi ERLC</p>
+                <h3>Comandi disponibili</h3>
+              </div>
+            </div>
+            <div id="commands-list" class="feed-list"></div>
+          </article>
+        </div>
+
+        <article class="panel" style="margin-top: 18px;">
+          <div class="panel-head">
+            <div>
+              <p class="eyebrow">Esecuzione Comando</p>
+              <h3>Seleziona e esegui</h3>
+            </div>
+          </div>
+          <form id="commands-form" class="stack">
+            <label class="field">
+              <span>Comando</span>
+              <select id="command-select"></select>
+            </label>
+            <div id="command-params"></div>
+            <button class="primary-btn" type="submit">Esegui comando</button>
+          </form>
+          <div id="command-output" style="margin-top: 18px; padding: 14px; background: rgba(0,0,0,0.3); border-radius: 14px; font-family: monospace; max-height: 300px; overflow-y: auto; color: #4ee29f; display: none;"></div>
+        </article>
+      </section>
+
+      <section id="section-manager" class="content-section">
+        <div class="content-grid two-col">
+          <article class="panel">
+            <div class="panel-head">
+              <div>
+                <p class="eyebrow">Staff Manager Area</p>
+                <h3>Aggiungi staff</h3>
+              </div>
+            </div>
+            <div id="manager-form-wrap">
+              <form id="team-form" class="stack">
+                <label class="field">
+                  <span>Username login</span>
+                  <input id="staff-username" type="text" placeholder="Nuovo staff">
+                </label>
+                <label class="field">
+                  <span>Nome Roblox</span>
+                  <input id="staff-roblox-name" type="text" placeholder="Nome Roblox per avatar">
+                </label>
+                <label class="field">
+                  <span>Nome visualizzato</span>
+                  <input id="staff-display-name" type="text" placeholder="Nome visualizzato">
+                </label>
+                <label class="field">
+                  <span>Ruolo</span>
+                  <select id="staff-role">
+                    <option value="Moderatore">Moderatore</option>
+                    <option value="Amministratore">Amministratore</option>
+                    <option value="Manager">Manager</option>
+                  </select>
+                </label>
+                <label class="field">
+                  <span>Password temporanea</span>
+                  <input id="staff-temp-password" type="password" placeholder="Visibile solo nell'area manager">
+                </label>
+                <button class="primary-btn" type="submit">Aggiungi membro</button>
+              </form>
+            </div>
+            <div id="manager-lock" class="manager-only-lock hidden">
+              Solo i Manager possono vedere e usare quest'area.
+            </div>
+          </article>
+
+          <article class="panel">
+            <div class="panel-head">
+              <div>
+                <p class="eyebrow">Visualizzazione Staff</p>
+                <h3>Stato account</h3>
+              </div>
+            </div>
+            <div id="manager-grid" class="team-grid"></div>
+            <div id="manager-passwords" class="panel hidden" style="margin-top:18px;padding:18px;display:none !important;">
+              <div class="panel-head">
+                <div>
+                  <p class="eyebrow">Password Setup</p>
+                  <h3>Utenti che devono cambiarla</h3>
+                </div>
+              </div>
+              <div id="manager-password-list"></div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section id="section-profile" class="content-section">
+        <div class="content-grid two-col">
+          <article class="panel">
+            <div class="panel-head">
+              <div>
+                <p class="eyebrow">Area Personale</p>
+                <h3>Modifica profilo</h3>
+              </div>
+            </div>
+            <div class="profile-header">
+              <img id="profile-avatar" class="avatar large" src="" alt="Avatar profilo">
+              <div>
+                <h3 id="profile-name"></h3>
+                <p id="profile-role" class="muted"></p>
+              </div>
+            </div>
+            <form id="profile-form" class="stack">
+              <label class="field">
+                <span>Nome visualizzato</span>
+                <input id="profile-display-name" type="text">
+              </label>
+              <label class="field">
+                <span>Nome Roblox</span>
+                <input id="profile-roblox-name" type="text">
+              </label>
+              <button class="primary-btn" type="submit">Salva profilo</button>
+            </form>
+          </article>
+
+          <article class="panel">
+            <div class="panel-head">
+              <div>
+                <p class="eyebrow">Sicurezza</p>
+                <h3>Cambio password</h3>
+              </div>
+            </div>
+            <form id="password-form" class="stack">
+              <label class="field">
+                <span>Nuova password</span>
+                <input id="new-password" type="password" placeholder="Almeno 8 caratteri">
+              </label>
+              <ul class="rules-list">
+                <li id="rule-length">Almeno 8 caratteri</li>
+                <li id="rule-upper">Una lettera maiuscola</li>
+                <li id="rule-number">Un numero</li>
+                <li id="rule-special">Un carattere speciale</li>
+              </ul>
+              <button class="primary-btn" type="submit">Aggiorna password</button>
+            </form>
+            <div id="first-login-badge" class="pill-alert hidden" style="margin-top:14px;">
+              Primo accesso: cambia la password prima di uscire.
+            </div>
+          </article>
+        </div>
+      </section>
+    </main>
+  </section>
+</div>
+
+<div id="toast-container" class="toast-container" aria-live="polite"></div>
+<script>
+  const EMBEDDED_LOGO = "data:image/webp;base64,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";
+
+  const STORAGE_KEY = "houston_staff_panel_single_file_v2";
+
+  function hoursFromNow(hours) {
+    return new Date(Date.now() + hours * 60 * 60 * 1000).toISOString();
+  }
+
+  function makeId() {
+    return "id-" + Date.now() + "-" + Math.floor(Math.random() * 1000000);
+  }
+
+  function createLog(type, playerName, reason, staffName, expiresAt, automatic) {
+    return {
+      id: makeId(),
+      type: type,
+      playerName: playerName,
+      reason: reason,
+      staffName: staffName,
+      createdAt: new Date().toISOString(),
+      expiresAt: expiresAt,
+      automatic: automatic
+    };
+  }
+
+  const defaultState = {
+    currentUser: null,
+    users: [
+      {
+        username: "admin",
+        passwordHash: "ef92b778bafe771e89245b89ecbc08a44a4e166c06659911881f383d4473e94f",
+        displayName: "Admin Houston",
+        role: "Manager",
+        robloxName: "Builderman",
+        avatar: "https://tr.rbxcdn.com/180DAY-6f5f2d2f73728d0f0d3a56d98d0d2178/150/150/AvatarHeadshot/Png",
+        online: true,
+        mustChangePassword: false
+      },
+      {
+        username: "moderatore",
+        passwordHash: "09fbcc458fb3430db7ec54ee95635e7fbc06ccfd982b49c55ec53ab8ac2397e7",
+        displayName: "Moderatore RP",
+        role: "Moderatore",
+        robloxName: "Roblox",
+        avatar: "https://tr.rbxcdn.com/180DAY-42f5e43d7c01d229f4bb35f3d8f385e6/150/150/AvatarHeadshot/Png",
+        online: true,
+        mustChangePassword: false
+      },
+      {
+        username: "alex.manager",
+        passwordHash: "866485796cfa8d7c0cf7111640205b83076433547577511d81f8030ae99ecea5",
+        displayName: "Alex Ranger",
+        role: "Amministratore",
+        robloxName: "Alexnewtron",
+        avatar: "https://tr.rbxcdn.com/180DAY-0bf8676c88dbff208221f0f91af6967d/150/150/AvatarHeadshot/Png",
+        online: false,
+        mustChangePassword: false
+      }
+    ],
+    players: [
+      { id: 1, robloxName: "Luca_RP", warns: 2, activeBanUntil: null, lastReason: "Fail RP leggero" },
+      { id: 2, robloxName: "TexasDriver", warns: 3, activeBanUntil: hoursFromNow(18), lastReason: "Powergaming" },
+      { id: 3, robloxName: "SheriffMax", warns: 1, activeBanUntil: null, lastReason: "Comportamento tossico" },
+      { id: 4, robloxName: "RancherJoe", warns: 4, activeBanUntil: hoursFromNow(32), lastReason: "VDM ripetuto" }
+    ],
+    logs: [
+      createLog("warn", "Luca_RP", "Fail RP leggero", "Admin Houston", null, false),
+      createLog("ban", "TexasDriver", "Powergaming", "Admin Houston", hoursFromNow(18), true),
+      createLog("kick", "SheriffMax", "Richiamo verbale ignorato", "Moderatore RP", null, false)
+    ]
+  };
+
+  function cloneData(data) {
+    return JSON.parse(JSON.stringify(data));
+  }
+
+  function loadState() {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (!saved) {
+        return cloneData(defaultState);
+      }
+      return JSON.parse(saved);
+    } catch (error) {
+      return cloneData(defaultState);
+    }
+  }
+
+  const state = loadState();
+
+  const elements = {
+    loginScreen: document.getElementById("login-screen"),
+    dashboardShell: document.getElementById("dashboard-shell"),
+    loginForm: document.getElementById("login-form"),
+    loginUsername: document.getElementById("login-username"),
+    loginPassword: document.getElementById("login-password"),
+    loginError: document.getElementById("login-error"),
+    togglePassword: document.getElementById("toggle-password"),
+    meterBars: document.querySelectorAll(".password-meter span"),
+    navLinks: document.querySelectorAll(".nav-link"),
+    sections: document.querySelectorAll(".content-section"),
+    sectionTitle: document.getElementById("section-title"),
+    playerSelect: document.getElementById("player-select"),
+    actionSelect: document.getElementById("action-select"),
+    reasonInput: document.getElementById("reason-input"),
+    moderationForm: document.getElementById("moderation-form"),
+    durationField: document.getElementById("duration-field"),
+    banDuration: document.getElementById("ban-duration"),
+    playerCards: document.getElementById("player-cards"),
+    logsList: document.getElementById("logs-list"),
+    discordPreview: document.getElementById("discord-preview"),
+    recentActions: document.getElementById("recent-actions"),
+    statsGrid: document.getElementById("stats-grid"),
+    activeBansValue: document.getElementById("active-bans-value"),
+    warnTotalValue: document.getElementById("warn-total-value"),
+    kicksTodayValue: document.getElementById("kicks-today-value"),
+    staffOnlineValue: document.getElementById("staff-online-value"),
+    onlineCounterLabel: document.getElementById("online-counter-label"),
+    sidebarAvatar: document.getElementById("sidebar-avatar"),
+    sidebarName: document.getElementById("sidebar-name"),
+    sidebarRole: document.getElementById("sidebar-role"),
+    logoutBtn: document.getElementById("logout-btn"),
+    teamForm: document.getElementById("team-form"),
+    managerGrid: document.getElementById("manager-grid"),
+    managerPasswords: document.getElementById("manager-passwords"),
+    managerPasswordList: document.getElementById("manager-password-list"),
+    managerLock: document.getElementById("manager-lock"),
+    managerFormWrap: document.getElementById("manager-form-wrap"),
+    profileAvatar: document.getElementById("profile-avatar"),
+    profileName: document.getElementById("profile-name"),
+    profileRole: document.getElementById("profile-role"),
+    profileForm: document.getElementById("profile-form"),
+    profileDisplayName: document.getElementById("profile-display-name"),
+    profileRobloxName: document.getElementById("profile-roblox-name"),
+    passwordForm: document.getElementById("password-form"),
+    newPassword: document.getElementById("new-password"),
+    ruleLength: document.getElementById("rule-length"),
+    ruleUpper: document.getElementById("rule-upper"),
+    ruleNumber: document.getElementById("rule-number"),
+    ruleSpecial: document.getElementById("rule-special"),
+    toastContainer: document.getElementById("toast-container"),
+    staffUsername: document.getElementById("staff-username"),
+    staffRobloxName: document.getElementById("staff-roblox-name"),
+    staffDisplayName: document.getElementById("staff-display-name"),
+    staffRole: document.getElementById("staff-role"),
+    staffTempPassword: document.getElementById("staff-temp-password"),
+    sidebarToggle: document.getElementById("sidebar-toggle"),
+    sidebarNav: document.getElementById("sidebar-nav"),
+    brandLogo: document.getElementById("brand-logo"),
+    miniLogo: document.getElementById("mini-logo"),
+    firstLoginBadge: document.getElementById("first-login-badge"),
+    commandsList: document.getElementById("commands-list"),
+    commandSelect: document.getElementById("command-select"),
+    commandParams: document.getElementById("command-params"),
+    commandsForm: document.getElementById("commands-form"),
+    commandOutput: document.getElementById("command-output"),
+    robloxSearchInput: document.getElementById("roblox-search-input"),
+    robloxSearchBtn: document.getElementById("roblox-search-btn"),
+    robloxSearchResult: document.getElementById("roblox-search-result"),
+    robloxFoundAvatar: document.getElementById("roblox-found-avatar"),
+    robloxFoundName: document.getElementById("roblox-found-name"),
+    robloxFoundId: document.getElementById("roblox-found-id"),
+    robloxAddPlayerBtn: document.getElementById("roblox-add-player-btn")
+  };
+
+  function saveState() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  }
+
+  async function sha256(text) {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(text);
+    const digest = await crypto.subtle.digest("SHA-256", data);
+    const bytes = Array.from(new Uint8Array(digest));
+    return bytes.map(function (b) {
+      return b.toString(16).padStart(2, "0");
+    }).join("");
+  }
+
+  const robloxCache = {};
+
+  async function fetchRobloxAvatarByUsername(username) {
+    const fallback = "https://tr.rbxcdn.com/180DAY-6f5f2d2f73728d0f0d3a56d98d0d2178/150/150/AvatarHeadshot/Png";
+
+    if (robloxCache[username]) {
+      return robloxCache[username];
+    }
+
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(function() { controller.abort(); }, 5000);
+
+      const response = await fetch("https://users.roblox.com/v1/usernames/users", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ usernames: [username], excludeBannedUsers: false }),
+        signal: controller.signal
+      });
+      clearTimeout(timeoutId);
+
+      if (!response.ok) {
+        robloxCache[username] = fallback;
+        return fallback;
+      }
+      const data = await response.json();
+      const userId = data && data.data && data.data[0] && data.data[0].id;
+      if (!userId) {
+        robloxCache[username] = fallback;
+        return fallback;
+      }
+
+      const avatarResponse = await fetch("https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=" + userId + "&size=150x150&format=Png&isCircular=false", {
+        signal: controller.signal
+      });
+
+      if (!avatarResponse.ok) {
+        robloxCache[username] = fallback;
+        return fallback;
+      }
+
+      const avatarData = await avatarResponse.json();
+      const imageUrl = avatarData && avatarData.data && avatarData.data[0] && avatarData.data[0].imageUrl;
+      const result = imageUrl || fallback;
+      robloxCache[username] = result;
+      return result;
+    } catch (error) {
+      console.warn("Roblox API error for " + username + ": " + error.message);
+      robloxCache[username] = fallback;
+      return fallback;
+    }
+  }
+
+  const erlcCommands = [
+    { name: "/promote", description: "Promuovi un giocatore di rango", params: ["username", "newRank"] },
+    { name: "/demote", description: "Degrada un giocatore di rango", params: ["username", "newRank"] },
+    { name: "/fire", description: "Licenzia un giocatore dal lavoro", params: ["username", "reason"] },
+    { name: "/suspend", description: "Sospendi un giocatore temporaneamente (ore)", params: ["username", "hours", "reason"] },
+    { name: "/warn", description: "Avverti un giocatore", params: ["username", "reason"] },
+    { name: "/kick", description: "Caccia un giocatore dal server", params: ["username", "reason"] },
+    { name: "/freeze", description: "Congela un giocatore in posizione", params: ["username", "reason"] },
+    { name: "/unfreeze", description: "Scongela un giocatore", params: ["username"] },
+    { name: "/setrank", description: "Imposta il rango di un giocatore", params: ["username", "rank"] },
+    { name: "/setsalary", description: "Imposta lo stipendio di un giocatore", params: ["username", "amount"] },
+    { name: "/setwantedlevel", description: "Imposta il livello ricercato", params: ["username", "level"] },
+    { name: "/givebadge", description: "Assegna un badge a un giocatore", params: ["username", "badge"] },
+    { name: "/removebadge", description: "Rimuovi un badge da un giocatore", params: ["username", "badge"] },
+    { name: "/setcall", description: "Imposta il callsign di un giocatore", params: ["username", "callsign"] },
+    { name: "/ban", description: "Banna un giocatore dal server ERLC", params: ["username", "reason"] },
+    { name: "/unban", description: "Rimuovi il ban di un giocatore", params: ["username"] },
+    { name: "/mute", description: "Silenzia un giocatore nella chat", params: ["username", "minutes", "reason"] },
+    { name: "/teleport", description: "Teletrasporta un giocatore da te", params: ["username"] }
+  ];
+
+  function getCurrentUser() {
+    for (let i = 0; i < state.users.length; i += 1) {
+      if (state.users[i].username === state.currentUser) {
+        return state.users[i];
+      }
+    }
+    return null;
+  }
+
+  function formatDate(value) {
+    if (!value) {
+      return "Nessuna scadenza";
+    }
+    return new Date(value).toLocaleString("it-IT");
+  }
+
+  function normalizeExpirations() {
+    let changed = false;
+    for (let i = 0; i < state.players.length; i += 1) {
+      const player = state.players[i];
+      if (player.activeBanUntil && new Date(player.activeBanUntil) <= new Date()) {
+        player.activeBanUntil = null;
+        state.logs.unshift(createLog("ban", player.robloxName, "Sbannamento automatico a scadenza", "Sistema", null, true));
+        changed = true;
+      }
+    }
+    if (changed) {
+      saveState();
+    }
+  }
+
+  function getStats() {
+    const today = new Date().toDateString();
+    let warnsToday = 0;
+    let kicksToday = 0;
+    let activeBans = 0;
+    let onlineStaff = 0;
+    let totalWarns = 0;
+
+    for (let i = 0; i < state.logs.length; i += 1) {
+      const log = state.logs[i];
+      if (new Date(log.createdAt).toDateString() === today) {
+        if (log.type === "warn") warnsToday += 1;
+        if (log.type === "kick") kicksToday += 1;
+      }
+    }
+
+    for (let j = 0; j < state.players.length; j += 1) {
+      totalWarns += state.players[j].warns;
+      if (state.players[j].activeBanUntil) activeBans += 1;
+    }
+
+    for (let k = 0; k < state.users.length; k += 1) {
+      if (state.users[k].online) onlineStaff += 1;
+    }
+
+    return {
+      warnsToday: warnsToday,
+      activeBans: activeBans,
+      kicksToday: kicksToday,
+      onlineStaff: onlineStaff,
+      recentCount: state.logs.slice(0, 5).length,
+      totalWarns: totalWarns
+    };
+  }
+
+  function actionLabel(type) {
+    if (type === "warn") return "Warn";
+    if (type === "kick") return "Kick";
+    if (type === "ban") return "Ban";
+    if (type === "command") return "Comando";
+    return type;
+  }
+
+  function badgeSymbol(type) {
+    if (type === "warn") return "!";
+    if (type === "kick") return "↗";
+    if (type === "ban") return "⛔";
+    if (type === "command") return "⌨";
+    return "?";
+  }
+
+  function renderStats() {
+    const stats = getStats();
+    const cards = [
+      { label: "Avvisi oggi", value: stats.warnsToday },
+      { label: "Ban attivi", value: stats.activeBans },
+      { label: "Kick oggi", value: stats.kicksToday },
+      { label: "Staff online", value: stats.onlineStaff },
+      { label: "Azioni recenti", value: stats.recentCount }
+    ];
+
+    let html = "";
+    for (let i = 0; i < cards.length; i += 1) {
+      html += '<article class="stat-card"><p class="muted">' + cards[i].label + '</p><strong class="stat-value">' + cards[i].value + "</strong></article>";
+    }
+
+    elements.statsGrid.innerHTML = html;
+    elements.activeBansValue.textContent = stats.activeBans;
+    elements.warnTotalValue.textContent = stats.totalWarns;
+    elements.kicksTodayValue.textContent = stats.kicksToday;
+    elements.staffOnlineValue.textContent = stats.onlineStaff;
+    elements.onlineCounterLabel.textContent = stats.onlineStaff + " staff online";
+  }
+
+  function renderLogs() {
+    let html = "";
+    for (let i = 0; i < state.logs.length; i += 1) {
+      const log = state.logs[i];
+      html += '<article class="feed-item">';
+      html += '<div class="feed-head"><div class="feed-title">';
+      html += '<div class="badge-icon ' + log.type + '">' + badgeSymbol(log.type) + "</div>";
+      html += "<div><strong>" + actionLabel(log.type) + " • " + log.playerName + "</strong>";
+      html += '<p class="feed-meta">' + log.staffName + " • " + formatDate(log.createdAt) + "</p></div></div>";
+      html += '<span class="chip">' + (log.automatic ? "Auto" : "Manuale") + "</span></div>";
+      html += '<p class="feed-description">Motivo: ' + log.reason + "</p>";
+      html += '<p class="feed-description">Scadenza: ' + formatDate(log.expiresAt) + "</p>";
+      html += "</article>";
+    }
+    elements.logsList.innerHTML = html;
+
+    if (state.logs.length === 0) {
+      elements.discordPreview.innerHTML = "<p class='muted'>Nessun log disponibile.</p>";
+      return;
+    }
+
+    const latest = state.logs[0];
+    elements.discordPreview.innerHTML =
+      '<div class="discord-head"><div class="discord-stripe"></div><div><strong>Embed Discord simulato</strong><p class="muted">Webhook moderazione Houston RP</p></div></div>' +
+      '<div class="discord-body">' +
+      "<p><strong>Giocatore:</strong> " + latest.playerName + "</p>" +
+      "<p><strong>Azione:</strong> " + actionLabel(latest.type) + "</p>" +
+      "<p><strong>Motivo:</strong> " + latest.reason + "</p>" +
+      "<p><strong>Staff:</strong> " + latest.staffName + "</p>" +
+      "<p><strong>Timestamp:</strong> " + formatDate(latest.createdAt) + "</p>" +
+      "<p><strong>Scadenza:</strong> " + formatDate(latest.expiresAt) + "</p>" +
+      "</div>";
+  }
+
+  function renderRecentActions() {
+    let html = "";
+    const recent = state.logs.slice(0, 6);
+    for (let i = 0; i < recent.length; i += 1) {
+      const log = recent[i];
+      html += '<article class="feed-item">';
+      html += '<div class="feed-head"><div class="feed-title">';
+      html += '<div class="badge-icon ' + log.type + '">' + badgeSymbol(log.type) + "</div>";
+      html += "<strong>" + log.playerName + "</strong></div>";
+      html += '<span class="muted">' + formatDate(log.createdAt) + "</span></div>";
+      html += '<p class="feed-description">' + actionLabel(log.type) + " da " + log.staffName + "</p>";
+      html += "</article>";
+    }
+    elements.recentActions.innerHTML = html;
+  }
+
+  function renderPlayers() {
+    let selectHtml = "";
+    let cardsHtml = "";
+    for (let i = 0; i < state.players.length; i += 1) {
+      const player = state.players[i];
+      selectHtml += '<option value="' + player.id + '" data-name="' + player.robloxName + '">' + player.robloxName + "</option>";
+      cardsHtml += '<article class="player-card">';
+      cardsHtml += '<p class="eyebrow">Roblox Player</p>';
+      cardsHtml += "<h3>" + player.robloxName + "</h3>";
+      cardsHtml += '<p class="muted">Ultimo motivo: ' + (player.lastReason || "Nessuno") + "</p>";
+      cardsHtml += '<div class="player-stats">';
+      cardsHtml += "<span><strong>" + player.warns + "</strong><br>Warn</span>";
+      cardsHtml += "<span><strong>" + (player.activeBanUntil ? "Attivo" : "No") + "</strong><br>Ban</span>";
+      cardsHtml += "</div>";
+      cardsHtml += '<p class="feed-description">Scadenza ban: ' + formatDate(player.activeBanUntil) + "</p>";
+      cardsHtml += "</article>";
+    }
+    elements.playerSelect.innerHTML = selectHtml;
+    elements.playerCards.innerHTML = cardsHtml;
+  }
+
+  function renderManagerArea() {
+    const currentUser = getCurrentUser();
+    const canManage = currentUser && currentUser.role === "Manager";
+    elements.managerLock.classList.toggle("hidden", !!canManage);
+    elements.managerFormWrap.classList.toggle("hidden", !canManage);
+    elements.managerPasswords.classList.toggle("hidden", !canManage);
+
+    let html = "";
+    for (let i = 0; i < state.users.length; i += 1) {
+      const user = state.users[i];
+      html += '<article class="team-member">';
+      html += '<div class="team-head">';
+      html += '<img class="avatar" src="' + user.avatar + '" alt="' + user.displayName + '">';
+      html += "<div><strong>" + user.displayName + "</strong><p class='muted'>@" + user.username + "</p></div></div>";
+      html += '<span class="role-pill">' + user.role + "</span>";
+      html += '<span class="muted">' + (user.online ? "Online" : "Offline") + "</span>";
+      html += '<button class="team-action" type="button" data-username="' + user.username + '">Toggle online</button>';
+      html += "</article>";
+    }
+    elements.managerGrid.innerHTML = html;
+
+    const actions = document.querySelectorAll(".team-action");
+    for (let i = 0; i < actions.length; i += 1) {
+      actions[i].addEventListener("click", function () {
+        if (!canManage) return;
+        const username = this.getAttribute("data-username");
+        for (let j = 0; j < state.users.length; j += 1) {
+          if (state.users[j].username === username) {
+            state.users[j].online = !state.users[j].online;
+            break;
+          }
+        }
+        saveState();
+        renderAll();
+      });
+    }
+
+    if (canManage) {
+      let rows = '<table class="manager-table"><thead><tr><th>Utente</th><th>Ruolo</th><th>Stato</th><th>Password temporanea</th></tr></thead><tbody>';
+      for (let k = 0; k < state.users.length; k += 1) {
+        const entry = state.users[k];
+        rows += "<tr><td>@" + entry.username + "</td><td>" + entry.role + "</td><td>" + (entry.mustChangePassword ? "Da cambiare" : "Aggiornata") + "</td><td>" + (entry.mustChangePassword ? (entry.tempPasswordPlain || "Non impostata") : "Nascosta") + "</td></tr>";
+      }
+      rows += "</tbody></table>";
+      elements.managerPasswordList.innerHTML = rows;
+    }
+  }
+
+  function renderProfile() {
+    const user = getCurrentUser();
+    if (!user) return;
+    elements.sidebarAvatar.src = user.avatar;
+    elements.sidebarName.textContent = user.displayName;
+    elements.sidebarRole.textContent = user.role;
+    elements.profileAvatar.src = user.avatar;
+    elements.profileName.textContent = user.displayName;
+    elements.profileRole.textContent = user.role + " • @" + user.username;
+    elements.profileDisplayName.value = user.displayName;
+    elements.profileRobloxName.value = user.robloxName || "";
+    elements.firstLoginBadge.classList.toggle("hidden", !user.mustChangePassword);
+  }
+
+  function renderCommands() {
+    let listHtml = "";
+    let selectHtml = "";
+    for (let i = 0; i < erlcCommands.length; i += 1) {
+      const cmd = erlcCommands[i];
+      listHtml += '<article class="feed-item">';
+      listHtml += '<div class="feed-head"><strong>' + cmd.name + '</strong></div>';
+      listHtml += '<p class="feed-description">' + cmd.description + '</p>';
+      listHtml += '<p class="feed-meta">Parametri: ' + cmd.params.join(", ") + "</p>";
+      listHtml += "</article>";
+      selectHtml += '<option value="' + i + '">' + cmd.name + "</option>";
+    }
+    elements.commandsList.innerHTML = listHtml;
+    elements.commandSelect.innerHTML = selectHtml;
+    elements.commandSelect.addEventListener("change", updateCommandParams);
+    updateCommandParams();
+  }
+
+  function updateCommandParams() {
+    const selectedIndex = parseInt(elements.commandSelect.value, 10);
+    const cmd = erlcCommands[selectedIndex];
+    let html = "";
+    if (cmd && cmd.params) {
+      for (let i = 0; i < cmd.params.length; i += 1) {
+        const param = cmd.params[i];
+        html += '<label class="field">';
+        html += '<span>' + param.charAt(0).toUpperCase() + param.slice(1) + '</span>';
+        html += '<input type="text" name="param-' + i + '" placeholder="' + param + '" data-param="' + param + '">';
+        html += '</label>';
+      }
+    }
+    elements.commandParams.innerHTML = html;
+  }
+
+  function renderAll() {
+    normalizeExpirations();
+    syncManagerNav();
+    renderStats();
+    renderPlayers();
+    renderLogs();
+    renderRecentActions();
+    renderCommands();
+    renderManagerArea();
+    renderProfile();
+  }
+
+  function showToast(title, message) {
+    const toast = document.createElement("article");
+    toast.className = "toast";
+    toast.innerHTML = "<strong>" + title + "</strong><p>" + message + "</p>";
+    elements.toastContainer.appendChild(toast);
+    setTimeout(function () {
+      if (toast.parentNode) {
+        toast.parentNode.removeChild(toast);
+      }
+    }, 2800);
+  }
+
+  function setSection(sectionName) {
+    for (let i = 0; i < elements.navLinks.length; i += 1) {
+      const link = elements.navLinks[i];
+      if (link.getAttribute("data-section") === sectionName) {
+        link.classList.add("active");
+        elements.sectionTitle.textContent = link.textContent;
+      } else {
+        link.classList.remove("active");
+      }
+    }
+
+    for (let j = 0; j < elements.sections.length; j += 1) {
+      const section = elements.sections[j];
+      if (section.id === "section-" + sectionName) {
+        section.classList.add("active");
+      } else {
+        section.classList.remove("active");
+      }
+    }
+  }
+
+  function updatePasswordMeter(password) {
+    const checks = [
+      password.length >= 8,
+      /[A-Z]/.test(password),
+      /\d/.test(password),
+      /[^A-Za-z0-9]/.test(password)
+    ];
+
+    for (let i = 0; i < elements.meterBars.length; i += 1) {
+      if (checks[i]) {
+        elements.meterBars[i].classList.add("active");
+      } else {
+        elements.meterBars[i].classList.remove("active");
+      }
+    }
+
+    elements.ruleLength.classList.toggle("valid", checks[0]);
+    elements.ruleUpper.classList.toggle("valid", checks[1]);
+    elements.ruleNumber.classList.toggle("valid", checks[2]);
+    elements.ruleSpecial.classList.toggle("valid", checks[3]);
+  }
+
+  function syncAuthUI() {
+    const loggedIn = !!state.currentUser;
+    elements.loginScreen.classList.toggle("hidden", loggedIn);
+    elements.dashboardShell.classList.toggle("hidden", !loggedIn);
+  }
+
+  function syncManagerNav() {
+    const currentUser = getCurrentUser();
+    const managerLink = document.querySelector('[data-section="manager"]');
+    const canManage = currentUser && currentUser.role === "Manager";
+    if (managerLink) {
+      managerLink.classList.toggle("hidden", !canManage);
+    }
+    if (!canManage && elements.sectionTitle.textContent === "Staff Manager") {
+      setSection("dashboard");
+    }
+  }
+
+  async function handleLogin(event) {
+    event.preventDefault();
+    const username = elements.loginUsername.value.trim();
+    const password = elements.loginPassword.value;
+    const passwordHash = await sha256(password);
+    let found = null;
+
+    for (let i = 0; i < state.users.length; i += 1) {
+      if (state.users[i].username === username && state.users[i].passwordHash === passwordHash) {
+        found = state.users[i];
+        break;
+      }
+    }
+
+    if (!found) {
+      elements.loginError.hidden = false;
+      return;
+    }
+
+    state.currentUser = found.username;
+    elements.loginError.hidden = true;
+    saveState();
+    syncAuthUI();
+    renderAll();
+    if (found.mustChangePassword) {
+      setSection("profile");
+      showToast("Cambio password richiesto", "Primo accesso rilevato. Aggiorna subito la password.");
+      return;
+    }
+    showToast("Accesso eseguito", "Benvenuto " + found.displayName);
+  }
+
+  function handleModeration(event) {
+    event.preventDefault();
+    const currentUser = getCurrentUser();
+    if (!currentUser) return;
+
+    const playerId = parseInt(elements.playerSelect.value, 10);
+    const action = elements.actionSelect.value;
+    const reason = elements.reasonInput.value.trim() || "Motivo non specificato";
+    let player = null;
+
+    for (let i = 0; i < state.players.length; i += 1) {
+      if (state.players[i].id === playerId) {
+        player = state.players[i];
+        break;
+      }
+    }
+
+    if (!player) return;
+
+    let expiresAt = null;
+
+    if (action === "warn") {
+      player.warns += 1;
+      player.lastReason = reason;
+
+      if (player.warns >= 5) {
+        player.activeBanUntil = hoursFromNow(48);
+        state.logs.unshift(createLog("ban", player.robloxName, "Auto-ban intelligente: 5 warn", "Sistema", player.activeBanUntil, true));
+        showToast("Auto-ban", player.robloxName + " bannato per 48 ore");
+      } else if (player.warns >= 3) {
+        player.activeBanUntil = hoursFromNow(24);
+        state.logs.unshift(createLog("ban", player.robloxName, "Auto-ban intelligente: 3 warn", "Sistema", player.activeBanUntil, true));
+        showToast("Auto-ban", player.robloxName + " bannato per 24 ore");
+      }
+    }
+
+    if (action === "kick") {
+      player.lastReason = reason;
+    }
+
+    if (action === "ban") {
+      expiresAt = hoursFromNow(parseInt(elements.banDuration.value, 10));
+      player.activeBanUntil = expiresAt;
+      player.lastReason = reason;
+    }
+
+    state.logs.unshift(createLog(action, player.robloxName, reason, currentUser.displayName, expiresAt, false));
+    saveState();
+    renderAll();
+    event.target.reset();
+    elements.durationField.classList.add("hidden");
+    showToast("Azione salvata", actionLabel(action) + " registrato per " + player.robloxName);
+  }
+
+  async function handleTeamSubmit(event) {
+    event.preventDefault();
+    const currentUser = getCurrentUser();
+    if (!currentUser || currentUser.role !== "Manager") {
+      showToast("Accesso negato", "Solo un manager puo aggiungere staff.");
+      return;
+    }
+
+    const username = elements.staffUsername.value.trim();
+    const robloxName = elements.staffRobloxName.value.trim();
+    const displayName = elements.staffDisplayName.value.trim();
+    const role = elements.staffRole.value;
+    const tempPassword = elements.staffTempPassword.value;
+
+    if (!username || !displayName || !robloxName || !tempPassword) {
+      showToast("Dati mancanti", "Compila tutti i campi staff.");
+      return;
+    }
+
+    const avatar = await fetchRobloxAvatarByUsername(robloxName);
+
+    state.users.push({
+      username: username,
+      passwordHash: await sha256(tempPassword),
+      displayName: displayName,
+      role: role,
+      robloxName: robloxName,
+      avatar: avatar,
+      online: false,
+      mustChangePassword: true,
+      tempPasswordPlain: tempPassword
+    });
+
+    saveState();
+    renderAll();
+    event.target.reset();
+    showToast("Staff aggiunto", displayName + " inserito come " + role);
+  }
+
+  async function handleProfileSubmit(event) {
+    event.preventDefault();
+    const user = getCurrentUser();
+    if (!user) return;
+
+    user.displayName = elements.profileDisplayName.value.trim() || user.displayName;
+    user.robloxName = elements.profileRobloxName.value.trim() || user.robloxName;
+    if (user.robloxName) {
+      user.avatar = await fetchRobloxAvatarByUsername(user.robloxName);
+    }
+    saveState();
+    renderAll();
+    showToast("Profilo aggiornato", "Le modifiche sono state salvate.");
+  }
+
+  async function handlePasswordSubmit(event) {
+    event.preventDefault();
+    const user = getCurrentUser();
+    if (!user) return;
+
+    const password = elements.newPassword.value;
+    const valid = password.length >= 8 &&
+      /[A-Z]/.test(password) &&
+      /\d/.test(password) &&
+      /[^A-Za-z0-9]/.test(password);
+
+    if (!valid) {
+      showToast("Password non valida", "Rispetta tutti i requisiti indicati.");
+      return;
+    }
+
+    user.passwordHash = await sha256(password);
+    user.mustChangePassword = false;
+    user.tempPasswordPlain = "";
+    saveState();
+    event.target.reset();
+    updatePasswordMeter("");
+    showToast("Password aggiornata", "Nuova password salvata correttamente.");
+  }
+
+  function handleCommandSubmit(event) {
+    event.preventDefault();
+    const currentUser = getCurrentUser();
+    if (!currentUser) return;
+
+    const selectedIndex = parseInt(elements.commandSelect.value, 10);
+    const cmd = erlcCommands[selectedIndex];
+    if (!cmd) return;
+
+    const params = {};
+    const inputs = elements.commandParams.querySelectorAll("input");
+    for (let i = 0; i < inputs.length; i += 1) {
+      const input = inputs[i];
+      params[input.getAttribute("data-param")] = input.value;
+    }
+
+    let output = "[" + new Date().toLocaleTimeString("it-IT") + "] ";
+    output += "Staff: " + currentUser.displayName + " | ";
+    output += "Comando: " + cmd.name + " ";
+    for (let key in params) {
+      if (params[key]) {
+        output += key + ":" + params[key] + " ";
+      }
+    }
+    output += "\n";
+
+    elements.commandOutput.textContent += output;
+    elements.commandOutput.style.display = "block";
+
+    // Salva il comando nei log locali
+    const target = params["username"] || "N/A";
+    const detail = Object.keys(params).filter(function(k) { return k !== "username" && params[k]; }).map(function(k) { return k + ":" + params[k]; }).join(" ");
+    state.logs.unshift(createLog("command", target, cmd.name + (detail ? " " + detail : ""), currentUser.displayName, null, false));
+    saveState();
+    renderAll();
+
+    showToast("Comando eseguito", cmd.name + " eseguito su server");
+    event.target.reset();
+    updateCommandParams();
+  }
+
+  let robloxFoundUserId = null;
+  let robloxFoundUsername = null;
+
+  async function handleRobloxSearch() {
+    const username = elements.robloxSearchInput.value.trim();
+    if (!username) return;
+
+    elements.robloxSearchBtn.textContent = "...";
+    elements.robloxSearchBtn.disabled = true;
+    elements.robloxSearchResult.style.display = "none";
+
+    try {
+      const res = await fetch("https://users.roblox.com/v1/usernames/users", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ usernames: [username], excludeBannedUsers: false })
+      });
+      const data = await res.json();
+      const user = data && data.data && data.data[0];
+      if (!user) {
+        showToast("Non trovato", "Nessun giocatore con username: " + username);
+        return;
+      }
+
+      robloxFoundUserId = user.id;
+      robloxFoundUsername = user.name;
+
+      const avatarRes = await fetch("https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=" + user.id + "&size=150x150&format=Png&isCircular=false");
+      const avatarData = await avatarRes.json();
+      const avatarUrl = (avatarData.data && avatarData.data[0] && avatarData.data[0].imageUrl) || "https://tr.rbxcdn.com/180DAY-6f5f2d2f73728d0f0d3a56d98d0d2178/150/150/AvatarHeadshot/Png";
+
+      elements.robloxFoundAvatar.src = avatarUrl;
+      elements.robloxFoundName.textContent = user.name;
+      elements.robloxFoundId.textContent = "ID: " + user.id;
+      elements.robloxSearchResult.style.display = "flex";
+    } catch (e) {
+      showToast("Errore API", "Impossibile contattare Roblox.");
+    } finally {
+      elements.robloxSearchBtn.textContent = "Cerca";
+      elements.robloxSearchBtn.disabled = false;
+    }
+  }
+
+  function handleAddRobloxPlayer() {
+    if (!robloxFoundUsername) return;
+    const exists = state.players.find(function(p) { return p.robloxName.toLowerCase() === robloxFoundUsername.toLowerCase(); });
+    if (exists) {
+      showToast("Già presente", robloxFoundUsername + " è già nel registro.");
+      // Seleziona il giocatore nel dropdown
+      for (let i = 0; i < elements.playerSelect.options.length; i++) {
+        if (elements.playerSelect.options[i].text === exists.robloxName) {
+          elements.playerSelect.selectedIndex = i;
+          break;
+        }
+      }
+      return;
+    }
+    const newId = Date.now();
+    state.players.push({ id: newId, robloxName: robloxFoundUsername, warns: 0, activeBanUntil: null, lastReason: "" });
+    saveState();
+    renderPlayers();
+    // Seleziona il nuovo giocatore
+    for (let i = 0; i < elements.playerSelect.options.length; i++) {
+      if (elements.playerSelect.options[i].text === robloxFoundUsername) {
+        elements.playerSelect.selectedIndex = i;
+        break;
+      }
+    }
+    elements.robloxSearchResult.style.display = "none";
+    elements.robloxSearchInput.value = "";
+    showToast("Giocatore aggiunto", robloxFoundUsername + " aggiunto al registro.");
+  }
+
+  function init() {
+    elements.brandLogo.src = EMBEDDED_LOGO;
+    elements.miniLogo.src = EMBEDDED_LOGO;
+
+    elements.loginForm.addEventListener("submit", handleLogin);
+    elements.togglePassword.addEventListener("click", function () {
+      if (elements.loginPassword.type === "password") {
+        elements.loginPassword.type = "text";
+        elements.togglePassword.textContent = "Nascondi";
+      } else {
+        elements.loginPassword.type = "password";
+        elements.togglePassword.textContent = "Mostra";
+      }
+    });
+
+    elements.loginPassword.addEventListener("input", function () {
+      updatePasswordMeter(elements.loginPassword.value);
+    });
+
+    elements.newPassword.addEventListener("input", function () {
+      updatePasswordMeter(elements.newPassword.value);
+    });
+
+    for (let i = 0; i < elements.navLinks.length; i += 1) {
+      elements.navLinks[i].addEventListener("click", function () {
+        setSection(this.getAttribute("data-section"));
+      });
+    }
+
+    elements.actionSelect.addEventListener("change", function () {
+      if (elements.actionSelect.value === "ban") {
+        elements.durationField.classList.remove("hidden");
+      } else {
+        elements.durationField.classList.add("hidden");
+      }
+    });
+
+    elements.moderationForm.addEventListener("submit", handleModeration);
+    elements.teamForm.addEventListener("submit", handleTeamSubmit);
+    elements.profileForm.addEventListener("submit", handleProfileSubmit);
+    elements.passwordForm.addEventListener("submit", handlePasswordSubmit);
+    elements.commandsForm.addEventListener("submit", handleCommandSubmit);
+
+    elements.robloxSearchBtn.addEventListener("click", handleRobloxSearch);
+    elements.robloxSearchInput.addEventListener("keydown", function(e) {
+      if (e.key === "Enter") { e.preventDefault(); handleRobloxSearch(); }
+    });
+    elements.robloxAddPlayerBtn.addEventListener("click", handleAddRobloxPlayer);
+
+    elements.logoutBtn.addEventListener("click", function () {
+      state.currentUser = null;
+      saveState();
+      syncAuthUI();
+      showToast("Logout", "Sessione terminata.");
+    });
+
+    elements.sidebarToggle.addEventListener("click", function () {
+      elements.sidebarNav.classList.toggle("open");
+    });
+
+    syncAuthUI();
+    setSection("dashboard");
+    updatePasswordMeter("");
+    renderAll();
+    setInterval(function () {
+      normalizeExpirations();
+      renderAll();
+    }, 60000);
+  }
+
+  init();
+</script>
+</body>
+</html>
